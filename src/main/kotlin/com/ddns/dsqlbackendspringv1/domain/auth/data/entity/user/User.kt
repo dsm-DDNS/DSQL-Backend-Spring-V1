@@ -1,5 +1,7 @@
 package com.ddns.dsqlbackendspringv1.domain.auth.data.entity.user
 
+import com.ddns.dsqlbackendspringv1.domain.auth.business.dto.FullUserDto
+import com.ddns.dsqlbackendspringv1.domain.auth.business.dto.MiniUserDto
 import com.ddns.dsqlbackendspringv1.domain.auth.data.entity.type.Role
 import com.ddns.dsqlbackendspringv1.global.base.entity.BaseTimeEntity
 import javax.persistence.DiscriminatorColumn
@@ -30,5 +32,24 @@ sealed class User(
         private set
     var introduction: String = introduction
         private set
+
+    fun toMiniUserDto(): MiniUserDto {
+        return MiniUserDto(
+            this.id,
+            this.name,
+            this.email
+        )
+    }
+
+    fun toFullUserDto(): FullUserDto {
+        return FullUserDto(
+            this.id,
+            this.role,
+            this.name,
+            this.email,
+            this.pw,
+            this.introduction
+        )
+    }
 
 }
