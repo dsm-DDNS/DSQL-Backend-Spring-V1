@@ -17,6 +17,8 @@ enum class ErrorCode(
     CHECK_EMAIL_CODE_ERROR("Error Occurred while Checking Email Code", HttpStatus.NOT_FOUND),
     USER_NOT_FOUND("User Not Found", HttpStatus.NOT_FOUND),
     INCORRECT_PASSWORD("Incorrect Password", HttpStatus.BAD_REQUEST),
+    NEWS_NOT_FOUND("News Not Found", HttpStatus.NOT_FOUND),
+    PROJECT_NOT_FOUND("Project Not Found", HttpStatus.NOT_FOUND)
 
 
 }
