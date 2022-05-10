@@ -1,1 +1,72 @@
+spring:
+  jpa:
+    database: mysql
+    hibernate:
+      ddl-auto: update
+    generate-ddl: true
+    show-sql: false
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+
+  datasource:
+    url: ${db.default.url}
+    username: ${db.default.username}
+    password: ${db.default.pw}
+    driver-class-name: ${db.default.driver}
+  batch:
+    job:
+      enabled: false
+
+  redis:
+    host: localhost
+    port: 6379
+
+
+server:
+  port: 0
+
+datasource:
+  read:
+    driver-class-name: ${db.read.driver}
+    url: ${db.read.url}
+    user-name: ${db.read.username}
+    password: ${db.read.pw}
+  write:
+    driver-class-name: ${db.write.driver}
+    url: ${db.write.url}
+    user-name: ${db.write.username}
+    password: ${db.write.pw}
+
+
+logging.level.org.springframework.batch: DEBUG
+ncloud:
+  clientKey: ${ncloud.clientKey}
+  secretKey: ${ncloud.secretKey}
+
+tistory:
+  accessToken: ${tistory.accessToken}
+  blogName: ${tistory.blogname}
+
+
+jwt:
+  secretKey: dafdsvdavads
+  accessExpiredAt: 86400
+  refreshExpiredAt: 604800
+cloud:
+  aws:
+    credentials:
+      access-key: ${S3_IAM_ACCESS_KEY}
+      secret-key: ${S3_IAM_SECRET_KEY}
+    region:
+      static: ${S3_REGION}
+    stack:
+      auto: false
+    s3:
+      bucketName: ${S3_BUCKET_NAME}
+
+
+auth:
+  permit:
+    email: ["jinwoo794533@gmail.com", "chlaltnr7624@naver.com"]
+
+
 
