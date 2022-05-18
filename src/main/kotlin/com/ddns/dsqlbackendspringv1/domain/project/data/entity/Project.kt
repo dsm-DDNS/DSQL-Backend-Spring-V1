@@ -1,13 +1,17 @@
 package com.ddns.dsqlbackendspringv1.domain.project.data.entity
 
+import com.ddns.dsqlbackendspringv1.domain.auth.data.entity.user.User
 import com.ddns.dsqlbackendspringv1.domain.project.business.dto.FullProjectDto
 import com.ddns.dsqlbackendspringv1.domain.project.business.dto.ShortProject
+import com.ddns.dsqlbackendspringv1.global.base.entity.UploadFile
 import java.time.LocalDate
 import javax.persistence.ElementCollection
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
+import javax.persistence.JoinColumn
+import javax.persistence.ManyToOne
 
 
 @Entity
@@ -16,28 +20,30 @@ class Project(
     introduction: String,
     startDate: LocalDate,
     endDate: LocalDate,
-    devList: MutableList<Developer>
+    devList: MutableList<Developer>,
+    writer: User
+): UploadFile(
+    title,
+    introduction
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
 
-    var title: String = title
-
-    var introduction: String = introduction
-
-    @ElementCollection
-    var urlInfo: MutableList<UrlInfo> = ArrayList<UrlInfo>()
-
     var startDate: LocalDate = startDate
 
     var endDate: LocalDate = endDate
 
+
     @ElementCollection
-    var imgList: MutableList<Image> = ArrayList<Image>()
+    var urlInfo: MutableList<UrlInfo> = ArrayList<UrlInfo>()
 
     @ElementCollection
     var devList: MutableList<Developer> = devList
+
+    @ManyToOne
+    @JoinColumn(name = "writer_id")
+    val writer: User = writer
 
     fun addUrlInfo(urlInfo: UrlInfo) {
         this.urlInfo.add(urlInfo)
@@ -63,23 +69,11 @@ class Project(
         this.devList.remove(developer)
     }
 
-    fun addImg(img: Image) {
-        this.imgList.add(img)
-    }
-
-    fun addImgAll(imgList: List<Image>) {
-        this.imgList.addAll(imgList)
-    }
-
-    fun removeImg(img: Image) {
-        this.imgList.remove(img)
-    }
-
     fun toShortProjectDto(): ShortProject {
         return ShortProject(
             this.title,
             this.imgList,
-            this.introduction,
+            this.content,
             this.urlInfo
         )
     }
@@ -87,7 +81,7 @@ class Project(
     fun toFullProjectDto(): FullProjectDto {
         return FullProjectDto(
             this.title,
-            this.introduction,
+            this.content,
             this.startDate,
             this.endDate,
             this.devList,

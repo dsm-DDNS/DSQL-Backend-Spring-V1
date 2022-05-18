@@ -14,5 +14,10 @@ class Image(
     var name: String = name
     var url: String = url
     var isDeleted: Boolean =  false
+        protected set
+
+    fun remove() {
+        this.isDeleted = true
+    }
 
 }

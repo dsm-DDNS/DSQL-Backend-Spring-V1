@@ -17,10 +17,10 @@ class KomoranSeviceImpl(
     }
 
 
-    override fun extractContent(sentence: String): List<String> {
-        var s = sentence
-        if (sentence.contains(SW)||sentence.contains(MEISTER)) {
-            s = sentence.replace(SW, "").replace(MEISTER, "").replace(DAEDOEK, "")
+    override fun extractContent(content: String): List<String> {
+        var s = content
+        if (content.contains(SW)||content.contains(MEISTER)) {
+            s = content.replace(SW, "").replace(MEISTER, "").replace(DAEDOEK, "")
         }
         val result = komoran.analyze(s)
 

@@ -22,7 +22,7 @@ class AuthController(
 ) {
 
     @PostMapping("/email")
-    fun checekEmail(@RequestParam email: String) {
+    fun checkEmail(@RequestParam email: String) {
         emailService.sendCodeToEmail(email)
     }
 

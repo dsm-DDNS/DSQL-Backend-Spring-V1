@@ -11,8 +11,7 @@ data class RegisterProjectRequest(
     val startDate: LocalDate,
     val endDate: LocalDate,
     val devList: List<Developer>,
-    val urlInfo: List<UrlInfo>,
-    val imgList: List<Image>
+    val urlInfo: List<UrlInfo>
 
 
 )

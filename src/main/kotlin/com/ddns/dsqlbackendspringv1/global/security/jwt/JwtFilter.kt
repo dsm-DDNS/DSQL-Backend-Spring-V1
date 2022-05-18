@@ -5,6 +5,7 @@ import com.ddns.dsqlbackendspringv1.global.security.jwt.auth.CustomAuthDetailsSe
 import com.ddns.dsqlbackendspringv1.global.security.jwt.exception.InvalidTokenException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.filter.OncePerRequestFilter
 import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
@@ -25,16 +26,17 @@ class JwtFilter(
         filterChain: FilterChain
     ) {
 
-        val token = getToken(request)
-        val subject: String = tokenProvider.getSubjectWithExpiredCheck(token)
-        val userDetails = customAuthDetailsService.loadUserByUsername(subject)
-        SecurityContextHolder.getContext().authentication = UsernamePasswordAuthenticationToken(userDetails, subject, userDetails.authorities)
+        val subject: String? = getToken(request)?.let{tokenProvider.getSubjectWithExpiredCheck(it)}
 
+        subject?.let{
+            val userDetails = customAuthDetailsService.loadUserByUsername(it)
+            SecurityContextHolder.getContext().authentication = UsernamePasswordAuthenticationToken(userDetails, subject, userDetails.authorities)
+        }
         filterChain.doFilter(request, response)
     }
 
-    private fun getToken(request: HttpServletRequest): String {
-        val bearerToken = request.getHeader(AUTH) ?: throw InvalidTokenException(AUTH)
+    private fun getToken(request: HttpServletRequest): String? {
+        val bearerToken = request.getHeader(AUTH) ?: return null
         if (bearerToken.startsWith("Bearer ")) return bearerToken.substring(7)
         throw InvalidTokenException(bearerToken)
     }

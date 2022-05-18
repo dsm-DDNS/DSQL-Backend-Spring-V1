@@ -7,5 +7,4 @@ data class GenerateNewsRequest(
     val title: String,
     val shortContent: String,
     val content: String,
-    val writer: User
 )

@@ -12,7 +12,6 @@ import org.springframework.security.web.DefaultSecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
 
-@Configuration
 class FilterConfiguration(
     private val tokenProvider: TokenProvider,
     private val customAuthDetailsService: CustomAuthDetailsService,
@@ -23,6 +22,6 @@ class FilterConfiguration(
         val jwtFilter = JwtFilter(tokenProvider, customAuthDetailsService)
         val exceptionFilter = ExceptionFilter(objectMapper)
         builder.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter::class.java)
-        builder.addFilterBefore(exceptionFilter, jwtFilter::class.java)
+        builder.addFilterBefore(exceptionFilter, JwtFilter::class.java)
     }
 }

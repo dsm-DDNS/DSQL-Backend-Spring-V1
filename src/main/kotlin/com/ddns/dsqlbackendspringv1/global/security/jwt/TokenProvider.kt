@@ -5,7 +5,9 @@ import com.ddns.dsqlbackendspringv1.global.security.jwt.auth.CustomAuthDetailsSe
 import com.ddns.dsqlbackendspringv1.global.security.jwt.data.TokenResponse
 import com.ddns.dsqlbackendspringv1.global.security.jwt.env.JwtProperty
 import com.ddns.dsqlbackendspringv1.global.security.jwt.exception.ExpiredTokenException
+import com.ddns.dsqlbackendspringv1.global.security.jwt.exception.InvalidTokenException
 import io.jsonwebtoken.Claims
+import io.jsonwebtoken.JwtException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -22,7 +24,6 @@ class TokenProvider(
     private val customAuthDetailsService: CustomAuthDetailsService
 ){
     fun encode(subject: String): TokenResponse {
-        val now = LocalDateTime.now()
         return TokenResponse(
             Jwts.builder()
                 .signWith(SignatureAlgorithm.HS256, jwtProperty.secretKey)
@@ -42,7 +43,11 @@ class TokenProvider(
     }
 
     fun decodeBody(token: String): Claims {
-        return Jwts.parser().setSigningKey(jwtProperty.secretKey).parseClaimsJws(token).body
+        try {
+            return Jwts.parser().setSigningKey(jwtProperty.secretKey).parseClaimsJws(token).body
+        } catch (e: JwtException) {
+            throw InvalidTokenException(e.message.toString())
+        }
     }
 
     fun getSubjectWithExpiredCheck(token: String): String {

@@ -22,7 +22,7 @@ spring:
 
 
 server:
-  port: 0
+  port: 8080
 
 datasource:
   read:
@@ -41,11 +41,6 @@ logging.level.org.springframework.batch: DEBUG
 ncloud:
   clientKey: ${ncloud.clientKey}
   secretKey: ${ncloud.secretKey}
-
-tistory:
-  accessToken: ${tistory.accessToken}
-  blogName: ${tistory.blogname}
-
 
 jwt:
   secretKey: dafdsvdavads
@@ -67,6 +62,11 @@ cloud:
 auth:
   permit:
     email: ["jinwoo794533@gmail.com", "chlaltnr7624@naver.com"]
+springdoc:
+  swagger-ui:
+    path: /dsql-api-docs
+    operations-sorter: method
+    tags-sorter: method
 
 
 
