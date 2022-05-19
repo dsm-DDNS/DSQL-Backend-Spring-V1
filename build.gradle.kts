@@ -10,7 +10,7 @@ plugins {
 
 group = "com.ddns"
 version = "0.0.1-SNAPSHOT"
-java.sourceCompatibility = JavaVersion.VERSION_11
+java.sourceCompatibility = JavaVersion.VERSION_16
 
 repositories {
     mavenCentral()
