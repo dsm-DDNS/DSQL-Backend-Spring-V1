@@ -54,8 +54,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
     //spring-doc
     implementation("org.springdoc:springdoc-openapi-ui:1.6.4")
-
-    implementation("org.apache.logging.log4j:log4j-api:1.09.1")
 }
 
 tasks.withType<KotlinCompile> {
