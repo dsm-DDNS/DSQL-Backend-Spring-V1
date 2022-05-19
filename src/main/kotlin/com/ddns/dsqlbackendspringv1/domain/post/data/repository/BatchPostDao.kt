@@ -17,7 +17,7 @@ class BatchPostDao(
     fun getBatchPostList(size: Int): List<Post> {
         val postList = dbConfig.jdbcTemplate().query(
             "SELECT * FROM ? ORDER BY ? DESC LIMIT ?", TempPostMapper()
-            , {JobConfiguration.TABLE_NAME}
+            , {JobConfiguration.WRITE_TABLE_NAME}
             , {JobConfiguration.CREATE_AT_COLUMN}
             , size
         ).stream().map {
@@ -38,7 +38,7 @@ class BatchPostDao(
     fun getLatestPost(): Post {
         val post = dbConfig.jdbcTemplate().query(
             "SELECT * FROM ? ORDER BY ? DESC LIMIT 1", TempPostMapper()
-            , {JobConfiguration.TABLE_NAME}
+            , {JobConfiguration.WRITE_TABLE_NAME}
             , {JobConfiguration.CREATE_AT_COLUMN}
         ).map {
             Post(

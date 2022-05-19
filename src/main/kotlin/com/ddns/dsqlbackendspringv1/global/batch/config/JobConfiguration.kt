@@ -42,7 +42,8 @@ class JobConfiguration(
         const val SHORT_CNT_COLUMN = "short_content"
         const val IMG_COLUMN = "img"
         const val TAGS_COLUMN = "tags"
-        const val TABLE_NAME = "post"
+        const val READ_TABLE_NAME = "raw_post"
+        const val WRITE_TABLE_NAME = "post"
         const val JOB_NAME = "Test Job"
         const val LIMIT_SIZE = 30
     }
@@ -71,7 +72,7 @@ class JobConfiguration(
             .fetchSize(CHUNK_SIZE)
             .dataSource(dbSource.readDatasource())
             .rowMapper(PostRowMapper())
-            .sql("SELECT $TITLE_COLUMN, $URL_COLUMN, $CREATE_AT_COLUMN, $CONTENT_COLUMN, $IMG_COLUMN FROM $TABLE_NAME ORDER BY $CREATE_AT_COLUMN Asc")
+            .sql("SELECT $TITLE_COLUMN, $URL_COLUMN, $CREATE_AT_COLUMN, $CONTENT_COLUMN, $IMG_COLUMN FROM $READ_TABLE_NAME ORDER BY $CREATE_AT_COLUMN Asc")
             .fetchSize(LIMIT_SIZE)
             .name("jdbcCursorItemReader")
             .build()
@@ -82,7 +83,9 @@ class JobConfiguration(
     fun dsqlProcessor(): ItemProcessor<BatchPost, BatchWritePost> {
         return ItemProcessor {
             val isTrue = writeJdbcTemplate.query("SELECT EXISTS(" +
-                    "SELECT * FROM post WHERE title = " + '"' +it.title + '"' + " LIMIT 1) as isTrue;", IsTrueRowMapper()
+                    "SELECT * FROM " +
+                    WRITE_TABLE_NAME +
+                    " WHERE title = " + "'" +it.title + "'" + " LIMIT 1) as isTrue;", IsTrueRowMapper()
             )[0]
 
             if (isTrue.isTrue) {

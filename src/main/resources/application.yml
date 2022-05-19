@@ -8,10 +8,10 @@ spring:
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
 
   datasource:
-    url: ${db.default.url}
-    username: ${db.default.username}
-    password: ${db.default.pw}
-    driver-class-name: ${db.default.driver}
+    url: ${dbDefaultUrl}
+    username: ${dbDefaultUsername}
+    password: ${dbDefaultPw}
+    driver-class-name: ${dbDefaultDriver}
   batch:
     job:
       enabled: false
@@ -26,21 +26,21 @@ server:
 
 datasource:
   read:
-    driver-class-name: ${db.read.driver}
-    url: ${db.read.url}
-    user-name: ${db.read.username}
-    password: ${db.read.pw}
+    driver-class-name: ${dbDefaultDriver}
+    url: ${dbDefaultUrl}
+    user-name: ${dbDefaultUsername}
+    password: ${dbDefaultPw}
   write:
-    driver-class-name: ${db.write.driver}
-    url: ${db.write.url}
-    user-name: ${db.write.username}
-    password: ${db.write.pw}
+    driver-class-name: ${dbDefaultDriver}
+    url: ${dbDefaultUrl}
+    user-name: ${dbDefaultUsername}
+    password: ${dbDefaultPw}
 
 
 logging.level.org.springframework.batch: DEBUG
 ncloud:
-  clientKey: ${ncloud.clientKey}
-  secretKey: ${ncloud.secretKey}
+  clientKey: ${ncloudClientKey}
+  secretKey: ${ncloudSecretKey}
 
 jwt:
   secretKey: dafdsvdavads
