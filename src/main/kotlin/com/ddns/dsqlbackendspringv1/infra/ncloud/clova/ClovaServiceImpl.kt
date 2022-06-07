@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
+import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.RestTemplate
 
 
@@ -26,7 +27,7 @@ class ClovaServiceImpl(
     }
 
 
-    override fun extractContent(title: String, content: String): String {
+    override fun extractContent(title: String, content: String): String? {
         val text = parseUtil.extractLink(content).replace("\n", " ")
         if (text.length <= 30) return content
 
@@ -50,6 +51,15 @@ class ClovaServiceImpl(
 
         val httpEntity = HttpEntity<ClovaSummaryRequset>(request, headers)
 
-        return restTemplate.exchange(SUMMARY_URL, HttpMethod.POST, httpEntity, ClovaSummaryResponse::class.java).body?.summary?:""
+        try {
+            return restTemplate.exchange(
+                SUMMARY_URL,
+                HttpMethod.POST,
+                httpEntity,
+                ClovaSummaryResponse::class.java
+            ).body?.summary ?: ""
+        } catch (e: HttpClientErrorException) {
+            return null
+        }
     }
 }

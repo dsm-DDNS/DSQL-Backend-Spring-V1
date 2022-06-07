@@ -1,20 +1,26 @@
 package com.ddns.dsqlbackendspringv1.global.batch.service
 
+import com.ddns.dsqlbackendspringv1.global.batch.config.JobConfiguration
 import com.ddns.dsqlbackendspringv1.global.batch.data.entity.BatchPost
 import com.ddns.dsqlbackendspringv1.global.batch.data.entity.BatchWritePost
+import com.ddns.dsqlbackendspringv1.global.database.DatabaseConfiguration
 import com.ddns.dsqlbackendspringv1.global.komoran.service.KomoranService
 import com.ddns.dsqlbackendspringv1.infra.alarm.AlarmService
 import com.ddns.dsqlbackendspringv1.infra.ncloud.clova.ClovaService
+import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
+import java.util.logging.Logger
 
 @Service
 class BatchProcessServiceImpl(
     private val komoranService: KomoranService,
     private val clovaService: ClovaService,
-    private val alarmService: AlarmService
+    private val alarmService: AlarmService,
+    private val jdbcTemplate: JdbcTemplate
 ): BatchProcessService {
 
+    private val log = Logger.getLogger(this::class.java.toString())
 
     @Async
     override fun process(post: BatchPost): BatchWritePost {
@@ -28,7 +34,9 @@ class BatchProcessServiceImpl(
         post.content?.let {
             //Clova를 통해 Content 요약
             val short = clovaService.extractContent(post.title, post.content!!)
-            writePost.insertShortContent(short)
+            short?.let {
+                writePost.insertShortContent(it)
+            }
         }
 //        //SNS Upload
 //        //tistory
@@ -36,6 +44,19 @@ class BatchProcessServiceImpl(
 //        println(out)
 //        //Alarm
 //        alarmService.sendAlarm(writePost.title)
+
+        log.info("[NEW]: ${writePost.title}")
+
+        jdbcTemplate.update("INSERT INTO POST(" +
+                "${JobConfiguration.TITLE_COLUMN}, " +
+                "${JobConfiguration.URL_COLUMN}, " +
+                "${JobConfiguration.CREATE_AT_COLUMN}, " +
+                "${JobConfiguration.CONTENT_COLUMN}, " +
+                "${JobConfiguration.SHORT_CNT_COLUMN}, " +
+                "${JobConfiguration.TAGS_COLUMN}, " +
+                "${JobConfiguration.IMG_COLUMN}) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?) ",
+            writePost.title, writePost.url, writePost.create_at, writePost.content, writePost.short_content, writePost.tags, writePost.img)
 
         return writePost
     }

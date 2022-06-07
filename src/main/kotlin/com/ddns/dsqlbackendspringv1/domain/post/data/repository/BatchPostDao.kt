@@ -5,12 +5,14 @@ import com.ddns.dsqlbackendspringv1.domain.post.data.mapper.TempPostMapper
 import com.ddns.dsqlbackendspringv1.global.batch.config.JobConfiguration
 import com.ddns.dsqlbackendspringv1.global.database.DatabaseConfiguration
 import com.ddns.dsqlbackendspringv1.global.util.textParsing.ContentTextParsingUtil
+import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
 
 @Repository
 class BatchPostDao(
     private val dbConfig: DatabaseConfiguration,
-    private val textParsingUtil: ContentTextParsingUtil
+    private val textParsingUtil: ContentTextParsingUtil,
+    private val jdbcTemplate: JdbcTemplate,
 ) {
 
 
@@ -36,11 +38,8 @@ class BatchPostDao(
     }
 
     fun getLatestPost(): Post {
-        val post = dbConfig.jdbcTemplate().query(
-            "SELECT * FROM ? ORDER BY ? DESC LIMIT 1", TempPostMapper()
-            , {JobConfiguration.WRITE_TABLE_NAME}
-            , {JobConfiguration.CREATE_AT_COLUMN}
-        ).map {
+        val query = "SELECT `title`, `url`, `create_at`, `content`, `short_content`, `tags`, `img` FROM `POST` ORDER BY `create_at` DESC LIMIT 1;"
+        val post = jdbcTemplate.query(query, TempPostMapper()).map {
             Post(
                 it.title,
                 it.url,

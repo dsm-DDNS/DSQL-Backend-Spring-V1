@@ -27,4 +27,8 @@ class BatchWritePost(
     fun insertShortContent(short: String) {
         this.short_content = short
     }
+
+    override fun toString(): String {
+        return "${this.title}, ${this.url}"
+    }
 }

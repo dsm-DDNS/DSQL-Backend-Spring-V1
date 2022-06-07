@@ -20,5 +20,7 @@ import org.springframework.scheduling.annotation.EnableScheduling
 class DsqlBackendSpringV1Application
 
 fun main(args: Array<String>) {
+
     runApplication<DsqlBackendSpringV1Application>(*args)
+
 }

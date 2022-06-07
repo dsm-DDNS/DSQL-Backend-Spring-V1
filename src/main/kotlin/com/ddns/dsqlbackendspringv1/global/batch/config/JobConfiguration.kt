@@ -11,7 +11,13 @@ import org.springframework.batch.core.Job
 import org.springframework.batch.core.Step
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory
+import org.springframework.batch.core.launch.JobLauncher
+import org.springframework.batch.core.launch.support.RunIdIncrementer
+import org.springframework.batch.core.launch.support.SimpleJobLauncher
+import org.springframework.batch.core.repository.JobRepository
+import org.springframework.batch.core.repository.support.JobRepositoryFactoryBean
 import org.springframework.batch.item.ItemProcessor
+import org.springframework.batch.item.ItemWriter
 import org.springframework.batch.item.database.JdbcBatchItemWriter
 import org.springframework.batch.item.database.JdbcCursorItemReader
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder
@@ -40,17 +46,20 @@ class JobConfiguration(
         const val CREATE_AT_COLUMN = "create_at"
         const val CONTENT_COLUMN = "content"
         const val SHORT_CNT_COLUMN = "short_content"
-        const val IMG_COLUMN = "img"
         const val TAGS_COLUMN = "tags"
-        const val READ_TABLE_NAME = "raw_post"
-        const val WRITE_TABLE_NAME = "post"
-        const val JOB_NAME = "Test Job"
+        const val IMG_COLUMN = "img"
+        const val READ_TABLE_NAME = "POST"
+        const val WRITE_TABLE_NAME = "POST"
+        const val JOB_NAME = "Uploading Job"
         const val LIMIT_SIZE = 30
     }
+
+
 
     @Bean
     fun dsqlDataProcessingJob(): Job {
         return jobBuilderFactory.get(JOB_NAME)
+            .incrementer(RunIdIncrementer())
             .start(dsqlPostProcessingStep())
             .build()
     }
@@ -72,7 +81,7 @@ class JobConfiguration(
             .fetchSize(CHUNK_SIZE)
             .dataSource(dbSource.readDatasource())
             .rowMapper(PostRowMapper())
-            .sql("SELECT $TITLE_COLUMN, $URL_COLUMN, $CREATE_AT_COLUMN, $CONTENT_COLUMN, $IMG_COLUMN FROM $READ_TABLE_NAME ORDER BY $CREATE_AT_COLUMN Asc")
+            .sql("SELECT $TITLE_COLUMN, $URL_COLUMN, $CREATE_AT_COLUMN, $CONTENT_COLUMN, $IMG_COLUMN FROM $READ_TABLE_NAME ORDER BY $CREATE_AT_COLUMN Desc")
             .fetchSize(LIMIT_SIZE)
             .name("jdbcCursorItemReader")
             .build()
@@ -82,31 +91,26 @@ class JobConfiguration(
     @Bean
     fun dsqlProcessor(): ItemProcessor<BatchPost, BatchWritePost> {
         return ItemProcessor {
-            val isTrue = writeJdbcTemplate.query("SELECT EXISTS(" +
-                    "SELECT * FROM " +
-                    WRITE_TABLE_NAME +
-                    " WHERE title = " + "'" +it.title + "'" + " LIMIT 1) as isTrue;", IsTrueRowMapper()
-            )[0]
-
-            if (isTrue.isTrue) {
-                return@ItemProcessor null
+            if (!writeJdbcTemplate.query(
+                    "SELECT EXISTS(" +
+                            "SELECT * FROM " +
+                            WRITE_TABLE_NAME +
+                            " WHERE title = " + "'" + it.title + "'" + " LIMIT 1) as isTrue;", IsTrueRowMapper()
+                )[0].isTrue) {
+                log.info(it.title)
+                return@ItemProcessor batchProcessService.process(it)
             }
-
-            val writePost = batchProcessService.process(it)
-
-            log.info("NEW ITEM: {}", writePost)
-            return@ItemProcessor writePost
+            return@ItemProcessor null
         }
     }
 
+
+
     @Bean
-    fun dsqlItemWriter(): JdbcBatchItemWriter<BatchWritePost> {
-        return JdbcBatchItemWriterBuilder<BatchWritePost>()
-            .dataSource(dbSource.writeDatasource())
-            .sql("insert into post($TITLE_COLUMN, $URL_COLUMN, $CREATE_AT_COLUMN, $CONTENT_COLUMN, $SHORT_CNT_COLUMN, $TAGS_COLUMN, $IMG_COLUMN) " +
-                    "values (:$TITLE_COLUMN, :$URL_COLUMN, :$CREATE_AT_COLUMN, :$CONTENT_COLUMN, :$SHORT_CNT_COLUMN, :$TAGS_COLUMN)")
-            .beanMapped()
-            .build()
+    fun dsqlItemWriter(): ItemWriter<BatchWritePost> {
+        return ItemWriter {
+
+        }
     }
 
 

@@ -27,7 +27,7 @@ server:
 datasource:
   read:
     driver-class-name: ${dbDefaultDriver}
-    url: ${dbDefaultUrl}
+    url: ${dbReadUrl}
     user-name: ${dbDefaultUsername}
     password: ${dbDefaultPw}
   write:
@@ -37,7 +37,6 @@ datasource:
     password: ${dbDefaultPw}
 
 
-logging.level.org.springframework.batch: DEBUG
 ncloud:
   clientKey: ${ncloudClientKey}
   secretKey: ${ncloudSecretKey}

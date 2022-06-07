@@ -27,7 +27,7 @@ class ContentTextParsingUtilImpl: ContentTextParsingUtil {
 
         while (rawStr.contains("https://")) {
             start = rawStr.indexOf("https://", start)
-            end = rawStr.indexOf("\n", start)
+            end = rawStr.indexOf("\n", start).takeUnless { it == -1 }?: break
             link = rawStr.substring(start, end)
             linkList.add(link)
             rawStr = rawStr.removeRange(start, end)
