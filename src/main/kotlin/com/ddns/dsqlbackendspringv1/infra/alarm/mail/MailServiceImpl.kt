@@ -1,5 +1,6 @@
 package com.ddns.dsqlbackendspringv1.infra.alarm.mail
 
+import com.ddns.dsqlbackendspringv1.infra.alarm.mail.config.MailProperty
 import com.ddns.dsqlbackendspringv1.infra.alarm.mail.exception.MailSendingException
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
@@ -16,7 +17,8 @@ import javax.mail.internet.MimeMessage
 @Service
 class MailServiceImpl(
     private val jms: JavaMailSender,
-    private val templateEngine: TemplateEngine
+    private val templateEngine: TemplateEngine,
+    private val mailProperty: MailProperty
 ): MailService {
 
 
@@ -28,7 +30,7 @@ class MailServiceImpl(
 
         try {
             val helper = MimeMessageHelper(message, true, "UTF-8")
-            helper.setFrom("dsmddns2022@naver.com")
+            helper.setFrom(mailProperty.username)
             helper.setSubject(title)
             helper.setTo(to)
             helper.setText(content, true)
