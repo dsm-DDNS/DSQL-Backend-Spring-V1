@@ -7,6 +7,8 @@ spring:
     show-sql: false
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
 
+
+
   datasource:
     url: ${dbDefaultUrl}
     username: ${dbDefaultUsername}
@@ -17,9 +19,8 @@ spring:
       enabled: false
 
   redis:
-    host: localhost
+    host: ${redisHost}
     port: 6379
-
 
 server:
   port: 8080
@@ -68,4 +69,16 @@ springdoc:
     tags-sorter: method
 
 
+mail:
+  host: smtp.naver.com
+  port: 587
+  username: ${EMAIL_NAME}
+  password: ${EMAIL_PASSWORD}
+  protocol: smtp
+  properties:
+    mail:
+      smtp:
+        auth: true
+        starttls:
+          enable: true
 
