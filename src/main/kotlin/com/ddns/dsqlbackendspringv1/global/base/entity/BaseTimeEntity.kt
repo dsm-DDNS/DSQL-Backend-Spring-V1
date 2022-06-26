@@ -14,7 +14,7 @@ import javax.persistence.MappedSuperclass
 abstract class BaseTimeEntity {
 
     @CreatedDate
-    val createdDate: LocalDateTime? = null
+    var createdDate: LocalDateTime? = null
 
     @LastModifiedDate
     var updateDate: LocalDateTime? = null

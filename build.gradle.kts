@@ -12,6 +12,17 @@ group = "com.ddns"
 version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_11
 
+allOpen {
+    annotation("javax.persistence.Entity")
+    annotation("org.springframework.data.redis.core.RedisHash")
+}
+
+noArg {
+    annotation("javax.persistence.Entity")
+    annotation("org.springframework.data.redis.core.RedisHash")
+}
+
+
 repositories {
     mavenCentral()
     maven(url = "https://jitpack.io")

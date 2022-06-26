@@ -30,14 +30,14 @@ class TokenProvider(
                 .setSubject(subject)
                 .claim("type", "access")
                 .setIssuedAt(Date())
-                .setExpiration(Date(Date().time + jwtProperty.accessExpiredAt))
+                .setExpiration(Date(Date().time + (jwtProperty.accessExpiredAt * 1000)))
                 .compact()
             ,
             Jwts.builder()
                 .signWith(SignatureAlgorithm.HS256, jwtProperty.secretKey)
                 .claim("type", "refresh")
                 .setIssuedAt(Date())
-                .setExpiration(Date(Date().time + jwtProperty.refreshExpiredAt))
+                .setExpiration(Date(Date().time + (jwtProperty.refreshExpiredAt * 1000)))
                 .compact()
         )
     }
@@ -54,7 +54,7 @@ class TokenProvider(
         val body = decodeBody(token)
         val now = Date()
         if (now.after(Date(now.time + body.expiration.time))) throw ExpiredTokenException(token)
-        return decodeBody(token).subject
+        return body.subject
     }
 
     fun isExpired(token: String): Boolean {

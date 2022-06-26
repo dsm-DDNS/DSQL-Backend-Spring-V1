@@ -23,7 +23,7 @@ class CustomAuthDetails(
     }
 
     override fun getUsername(): String {
-        TODO("Not yet implemented")
+        return this.user.email
     }
 
     override fun isAccountNonExpired(): Boolean {

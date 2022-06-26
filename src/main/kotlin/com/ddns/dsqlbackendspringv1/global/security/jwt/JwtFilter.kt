@@ -26,18 +26,19 @@ class JwtFilter(
         filterChain: FilterChain
     ) {
 
-        val subject: String? = getToken(request)?.let{tokenProvider.getSubjectWithExpiredCheck(it)}
-
+        val subject: String? = getToken(request)?.let{return@let tokenProvider.getSubjectWithExpiredCheck(it)}
         subject?.let{
             val userDetails = customAuthDetailsService.loadUserByUsername(it)
-            SecurityContextHolder.getContext().authentication = UsernamePasswordAuthenticationToken(userDetails, subject, userDetails.authorities)
+            SecurityContextHolder.getContext().authentication = UsernamePasswordAuthenticationToken(userDetails, it, userDetails.authorities)
         }
         filterChain.doFilter(request, response)
     }
 
     private fun getToken(request: HttpServletRequest): String? {
         val bearerToken = request.getHeader(AUTH) ?: return null
-        if (bearerToken.startsWith("Bearer ")) return bearerToken.substring(7)
+        if (bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7)
+        }
         throw InvalidTokenException(bearerToken)
     }
 }

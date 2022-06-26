@@ -34,8 +34,10 @@ class AuthServiceImpl(
 ): AuthService {
 
     override fun signup(request: SignupRequest): TokenResponse {
-        if (emailCheckCodeRepository.findById(request.email).equals(request.emailCheckCode)) {
-            val encPw = passwordEncoder.encode(request.email)
+        if (
+            (emailCheckCodeRepository.findById(request.email).orElse(null)?: throw EmailCheckCodeException(request.email)
+        ).code.equals(request.emailCheckCode)) {
+            val encPw = passwordEncoder.encode(request.pw)
             val user = if (request.userType.equals(Role.ADMIN))
                 Admin(
                     UUID.randomUUID().toString(),
@@ -61,11 +63,11 @@ class AuthServiceImpl(
     }
 
     override fun login(request: LoginRequest): TokenResponse {
-        val user = userRepository.findById(request.email)
+        val user = userRepository.findByEmail(request.email)
             .orElse(null)?: throw UserNotFoundException(request.email)
-        if (passwordEncoder.matches(request.pw, user.pw))
+        if (passwordEncoder.matches(request.pw, user.pw)) {
             return tokenProvider.encode(user.id)
-        throw IncorrectPasswordException(request.pw)
+        } else throw IncorrectPasswordException(request.pw)
     }
 
     override fun reissue(request: ReissueRequest): TokenResponse {

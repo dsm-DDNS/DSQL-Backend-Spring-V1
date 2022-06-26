@@ -23,15 +23,15 @@ sealed class User(
     val id = id
 
     var role: Role = role
-        private set
+        protected set
     var name: String = name
-        private set
+        protected set
     val email: String = email
 
     var pw: String = pw
-        private set
+        protected set
     var introduction: String = introduction
-        private set
+        protected set
 
     fun toMiniUserDto(): MiniUserDto {
         return MiniUserDto(

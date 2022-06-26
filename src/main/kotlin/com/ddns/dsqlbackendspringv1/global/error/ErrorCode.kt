@@ -19,7 +19,8 @@ enum class ErrorCode(
     INCORRECT_PASSWORD("Incorrect Password", HttpStatus.BAD_REQUEST),
     NEWS_NOT_FOUND("News Not Found", HttpStatus.NOT_FOUND),
     PROJECT_NOT_FOUND("Project Not Found", HttpStatus.NOT_FOUND),
-    ALREADY_SAME_NAME_PROJECT_EXISTS("Already Same Name Project Exists.", HttpStatus.BAD_REQUEST)
+    ALREADY_SAME_NAME_PROJECT_EXISTS("Already Same Name Project Exists.", HttpStatus.BAD_REQUEST),
+    USER_ALREADY_EXISTS("User Already Exists", HttpStatus.BAD_REQUEST),
 
 
 }

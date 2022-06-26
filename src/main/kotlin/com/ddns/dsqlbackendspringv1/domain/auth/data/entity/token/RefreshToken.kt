@@ -14,10 +14,10 @@ class RefreshToken(
     val id = id
 
     var token = token
-        private set
+        protected set
     @TimeToLive
     var ttl: Long = 604800
-        private set
+        protected set
 
     fun reset(token: String) {
         this.token = token
