@@ -4,7 +4,7 @@ import com.ddns.dsqlbackendspringv1.domain.auth.exception.EmailCheckCodeExceptio
 import com.ddns.dsqlbackendspringv1.domain.auth.exception.IncorrectPasswordException
 import com.ddns.dsqlbackendspringv1.domain.auth.exception.UserNotFoundException
 import com.ddns.dsqlbackendspringv1.domain.auth.business.service.emailCheck.PermitEmailListProperty
-import com.ddns.dsqlbackendspringv1.domain.auth.data.entity.token.RefreshToken
+import com.ddns.dsqlbackendspringv1.domain.auth.data.token.RefreshToken
 import com.ddns.dsqlbackendspringv1.domain.auth.data.entity.type.Role
 import com.ddns.dsqlbackendspringv1.domain.auth.data.entity.user.Admin
 import com.ddns.dsqlbackendspringv1.domain.auth.data.entity.user.Teacher
@@ -35,8 +35,10 @@ class AuthServiceImpl(
 
     override fun signup(request: SignupRequest): TokenResponse {
         if (
-            (emailCheckCodeRepository.findById(request.email).orElse(null)?: throw EmailCheckCodeException(request.email)
-        ).code.equals(request.emailCheckCode)) {
+            true
+//            (emailCheckCodeRepository.findById(request.email).orElse(null)?: throw EmailCheckCodeException(request.email)
+//        ).code == request.emailCheckCode
+        ) {
             val encPw = passwordEncoder.encode(request.pw)
             val user = if (request.userType.equals(Role.ADMIN))
                 Admin(
@@ -83,6 +85,10 @@ class AuthServiceImpl(
         }.orElse(null)?: refreshTokenRepository.save(token)
 
         return tokenResponse
+    }
+
+    override fun test(@Credentials email: String?): String {
+        return email?: "null"
     }
 
 

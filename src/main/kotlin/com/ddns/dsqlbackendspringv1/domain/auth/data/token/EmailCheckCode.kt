@@ -1,4 +1,4 @@
-package com.ddns.dsqlbackendspringv1.domain.auth.data.entity.token
+package com.ddns.dsqlbackendspringv1.domain.auth.data.token
 
 import org.springframework.data.annotation.Id
 import org.springframework.data.redis.core.RedisHash

@@ -1,8 +1,6 @@
 package com.ddns.dsqlbackendspringv1.domain.auth.business.service
 
-import com.ddns.dsqlbackendspringv1.domain.auth.exception.NotPermitEmailException
-import com.ddns.dsqlbackendspringv1.domain.auth.business.service.emailCheck.PermitEmailListProperty
-import com.ddns.dsqlbackendspringv1.domain.auth.data.entity.token.EmailCheckCode
+import com.ddns.dsqlbackendspringv1.domain.auth.data.token.EmailCheckCode
 import com.ddns.dsqlbackendspringv1.domain.auth.data.repository.token.EmailCheckCodeRepository
 import com.ddns.dsqlbackendspringv1.domain.auth.data.repository.user.UserRepository
 import com.ddns.dsqlbackendspringv1.domain.auth.exception.UserAlreadyExistsException

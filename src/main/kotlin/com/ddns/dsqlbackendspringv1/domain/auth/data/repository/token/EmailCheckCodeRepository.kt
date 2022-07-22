@@ -1,6 +1,6 @@
 package com.ddns.dsqlbackendspringv1.domain.auth.data.repository.token
 
-import com.ddns.dsqlbackendspringv1.domain.auth.data.entity.token.EmailCheckCode
+import com.ddns.dsqlbackendspringv1.domain.auth.data.token.EmailCheckCode
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 
