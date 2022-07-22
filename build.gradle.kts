@@ -46,7 +46,7 @@ dependencies {
     //Komoran
     implementation("com.github.shin285:KOMORAN:3.3.4")
     //Validation
-    implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springframework.boot:spring-boot-starter-validation:2.7.0")
     //AWS
     implementation("org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE")
     //Security
@@ -64,7 +64,7 @@ dependencies {
     //redis
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
     //spring-doc
-    implementation("org.springdoc:springdoc-openapi-ui:1.6.4")
+    implementation("org.springdoc:springdoc-openapi-ui:1.6.9")
 }
 
 tasks.withType<KotlinCompile> {
