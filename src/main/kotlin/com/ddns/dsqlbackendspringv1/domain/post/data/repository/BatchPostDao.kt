@@ -17,29 +17,16 @@ class BatchPostDao(
 
 
     fun getBatchPostList(size: Int): List<Post> {
-        val postList = dbConfig.jdbcTemplate().query(
-            "SELECT * FROM ? ORDER BY ? DESC LIMIT ?", TempPostMapper()
-            , {JobConfiguration.WRITE_TABLE_NAME}
-            , {JobConfiguration.CREATE_AT_COLUMN}
-            , size
-        ).stream().map {
-            Post(
-                it.title,
-                it.url,
-                it.createAt,
-                it.content,
-                it.shortContent,
-                it.tags,
-                textParsingUtil.getLinkList(it.img),
-            )
-        }.toList()
-
-        return postList
+        return getPostList(size)
     }
 
     fun getLatestPost(): Post {
-        val query = "SELECT `title`, `url`, `create_at`, `content`, `short_content`, `tags`, `img` FROM `POST` ORDER BY `create_at` DESC LIMIT 1;"
-        val post = jdbcTemplate.query(query, TempPostMapper()).map {
+        return getBatchPostList(1)[0]
+    }
+
+    fun getPostList(size: Int): List<Post> {
+        val query = "SELECT `title`, `url`, `create_at`, `content`, `short_content`, `tags`, `img` FROM `POST` ORDER BY `create_at` DESC LIMIT ?;"
+        return jdbcTemplate.query(query, TempPostMapper(), size).map {
             Post(
                 it.title,
                 it.url,
@@ -49,9 +36,7 @@ class BatchPostDao(
                 it.tags,
                 textParsingUtil.getLinkList(it.img)
             )
-        }[0]
-
-        return post
+        }
     }
 
 }
