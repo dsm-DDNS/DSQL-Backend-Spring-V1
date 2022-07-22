@@ -11,7 +11,7 @@ interface NewsService {
     fun getShortNewsList(idx: Int, size: Int): ShortNewsListResponse
     fun getOneFullNewsList(id: Long): FullNewsDto
     fun getLatestFullNewsList(): FullNewsDto
-    fun generateNews(request: GenerateNewsRequest, imageList: List<MultipartFile>)
+    fun generateNews(request: GenerateNewsRequest, imageList: List<MultipartFile>?)
 
     fun editNews(newsId: Long, request: EditNewsRequest): FullNewsDto
 

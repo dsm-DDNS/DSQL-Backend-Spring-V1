@@ -7,12 +7,8 @@ import com.ddns.dsqlbackendspringv1.domain.news.exception.NewsNotFoundException
 import com.ddns.dsqlbackendspringv1.domain.news.presentation.dto.request.EditNewsRequest
 import com.ddns.dsqlbackendspringv1.domain.news.presentation.dto.request.GenerateNewsRequest
 import com.ddns.dsqlbackendspringv1.domain.news.presentation.dto.response.ShortNewsListResponse
-import com.ddns.dsqlbackendspringv1.domain.project.business.service.ProjectServiceImpl
-import com.ddns.dsqlbackendspringv1.domain.project.data.entity.Image
-import com.ddns.dsqlbackendspringv1.domain.project.data.entity.Project
 import com.ddns.dsqlbackendspringv1.global.util.image.UploadFileService
 import com.ddns.dsqlbackendspringv1.global.util.user.UserCheckUtil
-import com.ddns.dsqlbackendspringv1.infra.image.ImageUtil
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
@@ -44,7 +40,7 @@ class NewsServiceImpl(
         return newsRepository.findFirstByOrderByCreateAtDesc().toFullNewsDto()
     }
 
-    override fun generateNews(request: GenerateNewsRequest, imageList: List<MultipartFile>) {
+    override fun generateNews(request: GenerateNewsRequest, imageList: List<MultipartFile>?) {
         val user = current.getCurrentUser()
         val news = News(
             request.title,

@@ -2,16 +2,13 @@ package com.ddns.dsqlbackendspringv1.domain.project.business.service
 
 import com.ddns.dsqlbackendspringv1.domain.auth.data.entity.user.User
 import com.ddns.dsqlbackendspringv1.domain.project.business.dto.FullProjectDto
-import com.ddns.dsqlbackendspringv1.domain.project.business.dto.ShortProject
 import com.ddns.dsqlbackendspringv1.domain.project.data.entity.Developer
-import com.ddns.dsqlbackendspringv1.domain.project.data.entity.Image
 import com.ddns.dsqlbackendspringv1.domain.project.data.entity.Project
 import com.ddns.dsqlbackendspringv1.domain.project.data.entity.UrlInfo
 import com.ddns.dsqlbackendspringv1.domain.project.data.repository.ProjectRepository
 import com.ddns.dsqlbackendspringv1.domain.project.exception.AlreadySameNameProjectExistsException
 import com.ddns.dsqlbackendspringv1.domain.project.exception.ProjectNotFound
 import com.ddns.dsqlbackendspringv1.domain.project.presentation.dto.request.AddDevRequest
-import com.ddns.dsqlbackendspringv1.domain.project.presentation.dto.request.AddImageRequest
 import com.ddns.dsqlbackendspringv1.domain.project.presentation.dto.request.AddUrlInfoRequest
 import com.ddns.dsqlbackendspringv1.domain.project.presentation.dto.request.RegisterProjectRequest
 import com.ddns.dsqlbackendspringv1.domain.project.presentation.dto.response.FullProjectListResponse
@@ -19,7 +16,6 @@ import com.ddns.dsqlbackendspringv1.domain.project.presentation.dto.response.Gen
 import com.ddns.dsqlbackendspringv1.domain.project.presentation.dto.response.ShortProjectListResponse
 import com.ddns.dsqlbackendspringv1.global.util.image.UploadFileService
 import com.ddns.dsqlbackendspringv1.global.util.user.UserCheckUtil
-import com.ddns.dsqlbackendspringv1.infra.image.ImageUtil
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
@@ -58,7 +54,7 @@ class ProjectServiceImpl(
         return findProject(id).toFullProjectDto()
     }
 
-    override fun registerProject(request: RegisterProjectRequest, imageList: List<MultipartFile>): GenerateProjectResponse {
+    override fun registerProject(request: RegisterProjectRequest, imageList: List<MultipartFile>?): GenerateProjectResponse {
         projectRepository.findByTitle(request.title).orElse(null)?. let {throw AlreadySameNameProjectExistsException(request.title)}
 
         val user = current.getCurrentUser()

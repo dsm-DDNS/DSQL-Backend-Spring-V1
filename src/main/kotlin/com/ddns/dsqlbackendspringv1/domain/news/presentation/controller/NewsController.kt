@@ -43,7 +43,7 @@ class NewsController(
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun generateNews(@RequestBody request: GenerateNewsRequest, @RequestPart(name = "image") imageList: List<MultipartFile>) {
+    fun generateNews(@RequestBody request: GenerateNewsRequest, @RequestPart(name = "image") imageList: List<MultipartFile>?) {
         return newsService.generateNews(request, imageList)
     }
 

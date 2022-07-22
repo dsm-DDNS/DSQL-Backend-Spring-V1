@@ -14,9 +14,9 @@ class UploadFileServiceImpl(
 ): UploadFileService {
 
 
-    override fun uploadImageList(imageList: List<MultipartFile>, target: UploadFile): UploadFile {
+    override fun uploadImageList(imageList: List<MultipartFile>?, target: UploadFile): UploadFile {
         val parsedImageList: MutableList<Image> = ArrayList()
-        imageList.stream().map { parsedImageList.add(
+        imageList?.stream()?.map { parsedImageList.add(
             Image(
                 it.originalFilename?:it.name,
                 imageUtil.uploadFile(it, ProjectServiceImpl.IMAGE_ROOT_NAME, it.originalFilename?:it.name)
