@@ -3,7 +3,9 @@ package com.ddns.dsqlbackendspringv1.global.error.handler
 import com.amazonaws.Response
 import com.ddns.dsqlbackendspringv1.global.error.data.ErrorResponse
 import com.ddns.dsqlbackendspringv1.global.error.data.GlobalError
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 
@@ -17,6 +19,16 @@ class ErrorHandler {
             ErrorResponse(
                 error.errorCode.message,
                 error.data
+            )
+        )
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException::class)
+    fun methodArgumentNotValidException(e: MethodArgumentNotValidException): ResponseEntity<*> {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+            ErrorResponse(
+                e.message,
+                "Invalid request"
             )
         )
     }

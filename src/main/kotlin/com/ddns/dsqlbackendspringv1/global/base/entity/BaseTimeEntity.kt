@@ -3,8 +3,8 @@ package com.ddns.dsqlbackendspringv1.global.base.entity
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
-import java.time.LocalDate
 import java.time.LocalDateTime
+import javax.persistence.Column
 import javax.persistence.EntityListeners
 import javax.persistence.MappedSuperclass
 
@@ -14,14 +14,14 @@ import javax.persistence.MappedSuperclass
 abstract class BaseTimeEntity {
 
     @CreatedDate
-    var createdDate: LocalDateTime? = null
+    @Column(name = "created_date")
+    open var createdDate: LocalDateTime? = null
+        protected set
 
     @LastModifiedDate
-    var updateDate: LocalDateTime? = null
-
-    fun getCreateDate(): LocalDateTime {
-        return createdDate!!
-    }
+    @Column(name = "update_date")
+    open var updateDate: LocalDateTime? = null
+        protected set
 
 
 }
