@@ -24,7 +24,6 @@ class News(
     content: String,
     shortContent: String,
     writer: User,
-    createAt: LocalDate
 ): UploadFile(
     title,
     content
@@ -39,14 +38,12 @@ class News(
     @JoinColumn(name = "writer_id")
     var writer: User = writer
 
-    @Column(name = "news_create_date")
-    var createAt: LocalDate = createAt
-
     fun toShortNews(): ShortNewsDto {
         return ShortNewsDto(
             this.title,
             this.shortContent,
-            this.writer.toMiniUserDto()
+            this.writer.toMiniUserDto(),
+            this.imgList
         )
     }
 
@@ -56,8 +53,9 @@ class News(
             this.shortContent,
             this.content,
             this.writer.toFullUserDto(),
-            this.createdDate!!.toLocalDate()
-            )
+            this.createdDate!!.toLocalDate(),
+            this.imgList.toList()
+        )
     }
 
     fun editNews(request: EditNewsRequest) {
@@ -65,6 +63,10 @@ class News(
         this.shortContent = request.shortContent
         this.content = request.content
 
+    }
+
+    override fun getIdentity(): String {
+        return this.id.toString() + "_NEWS"
     }
 
 }

@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import java.util.*
 
 interface NewsRepository: JpaRepository<News, Long> {
-    override fun findAll(pageable: Pageable): Page<News>
-    fun findFirstByOrderByCreateAtDesc(): News
+    fun findAllByOrderByCreatedDateDesc(pageable: Pageable): Page<News>
+    fun findFirstByOrderByCreatedDateDesc(): News
     fun findByIdAndWriter(id: Long, writer: User): Optional<News>
 }

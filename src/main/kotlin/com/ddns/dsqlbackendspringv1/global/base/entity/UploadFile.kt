@@ -35,4 +35,6 @@ abstract class UploadFile(
 
     }
 
+    abstract fun getIdentity(): String
+
 }

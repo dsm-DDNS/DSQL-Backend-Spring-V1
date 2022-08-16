@@ -3,6 +3,7 @@ package com.ddns.dsqlbackendspringv1.global.komoran.service
 import kr.co.shineware.nlp.komoran.core.Komoran
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import kotlin.streams.toList
 
 @Service
 class KomoranSeviceImpl(

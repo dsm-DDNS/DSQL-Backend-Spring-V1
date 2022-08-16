@@ -8,6 +8,7 @@ import com.ddns.dsqlbackendspringv1.global.database.DatabaseConfiguration
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import kotlin.streams.toList
 
 @Service
 class PostServiceImpl(

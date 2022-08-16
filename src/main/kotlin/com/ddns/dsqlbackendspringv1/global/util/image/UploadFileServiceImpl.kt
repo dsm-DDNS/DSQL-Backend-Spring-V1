@@ -5,33 +5,45 @@ import com.ddns.dsqlbackendspringv1.domain.project.business.service.ProjectServi
 import com.ddns.dsqlbackendspringv1.domain.project.data.entity.Image
 import com.ddns.dsqlbackendspringv1.global.base.entity.UploadFile
 import com.ddns.dsqlbackendspringv1.infra.image.ImageUtil
+import org.springframework.data.auditing.CurrentDateTimeProvider
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
+import java.time.LocalDateTime
+import java.util.Calendar
+import java.util.Date
+import kotlin.streams.toList
 
 @Service
 class UploadFileServiceImpl(
     private val imageUtil: ImageUtil
 ): UploadFileService {
 
-
-    override fun uploadImageList(imageList: List<MultipartFile>?, target: UploadFile): UploadFile {
+    @Transactional(propagation = Propagation.NESTED)
+    override fun uploadImageList(imageList: List<MultipartFile>, target: UploadFile): UploadFile {
         val parsedImageList: MutableList<Image> = ArrayList()
-        imageList?.stream()?.map { parsedImageList.add(
-            Image(
-                it.originalFilename?:it.name,
-                imageUtil.uploadFile(it, ProjectServiceImpl.IMAGE_ROOT_NAME, it.originalFilename?:it.name)
+        imageList.map {
+            parsedImageList.add(
+                Image(
+                    it.originalFilename?:"UNTITLED",
+                    imageUtil.uploadFile(it, ProjectServiceImpl.IMAGE_ROOT_NAME, target.getIdentity())
+                )
             )
-        ) }
-        parsedImageList.stream().map {
+        }
+
+        parsedImageList.map {
             target.addImg(it)
         }
 
         return target
     }
 
+
+    @Transactional(propagation = Propagation.NESTED)
     override fun removeImage(user: User, imageUrl: String, target: UploadFile): UploadFile {
         for (img in target.imgList) {
-            if (img.url.equals(imageUrl)) {
+            if (img.url == imageUrl) {
                 target.removeImg(img)
             }
         }

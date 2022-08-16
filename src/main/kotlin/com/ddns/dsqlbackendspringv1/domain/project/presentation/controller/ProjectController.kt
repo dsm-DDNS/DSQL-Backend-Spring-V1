@@ -44,11 +44,9 @@ class ProjectController(
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun registerProject(@RequestBody request: RegisterProjectRequest, @RequestPart(name = "image") imageList: List<MultipartFile>?): GenerateProjectResponse {
-        return projectService.registerProject(request, imageList)
+    fun registerProject(@RequestBody request: RegisterProjectRequest): GenerateProjectResponse {
+        return projectService.registerProject(request)
     }
-
-
 
     @PutMapping("/img")
     fun addImage(@RequestParam projectId: Long, @RequestPart(name = "image") imageList: List<MultipartFile>) {

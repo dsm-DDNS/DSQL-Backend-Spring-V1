@@ -1,10 +1,12 @@
 package com.ddns.dsqlbackendspringv1.domain.news.presentation.controller
 
 import com.ddns.dsqlbackendspringv1.domain.news.business.dto.FullNewsDto
+import com.ddns.dsqlbackendspringv1.domain.news.business.dto.ShortNewsDto
 import com.ddns.dsqlbackendspringv1.domain.news.business.service.NewsService
 import com.ddns.dsqlbackendspringv1.domain.news.presentation.dto.request.DeleteImageNewsRequest
 import com.ddns.dsqlbackendspringv1.domain.news.presentation.dto.request.GenerateNewsRequest
 import com.ddns.dsqlbackendspringv1.domain.news.presentation.dto.response.ShortNewsListResponse
+import org.springframework.data.domain.Page
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
+import java.security.InvalidParameterException
 
 
 @RestController
@@ -27,13 +30,13 @@ class NewsController(
 
 
     @GetMapping("/list")
-    fun getShortNewsList(@RequestParam(defaultValue = 1.toString(), required = false) idx: Int,@RequestParam size: Int): ShortNewsListResponse {
+    fun getShortNewsList(@RequestParam(defaultValue = "0", required = false) idx: Int,@RequestParam(defaultValue = "5", required = false) size: Int): Page<ShortNewsDto> {
         return newsService.getShortNewsList(idx, size)
     }
 
     @GetMapping
-    fun getOneFullNews(@RequestParam newsId: Long): FullNewsDto {
-        return newsService.getOneFullNewsList(newsId)
+    fun getOneFullNews(@RequestParam(required = false) newsId: Long?): FullNewsDto {
+        return newsService.getOneFullNewsList(newsId?: throw com.ddns.dsqlbackendspringv1.global.error.common.InvalidParameterException("NULL"))
     }
 
     @GetMapping("/latest")
@@ -43,8 +46,8 @@ class NewsController(
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun generateNews(@RequestBody request: GenerateNewsRequest, @RequestPart(name = "image") imageList: List<MultipartFile>?) {
-        return newsService.generateNews(request, imageList)
+    fun generateNews(@RequestBody request: GenerateNewsRequest) {
+        return newsService.generateNews(request)
     }
 
     @DeleteMapping("/img")
@@ -55,7 +58,7 @@ class NewsController(
 
     @PutMapping("/img")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    fun addImage(@RequestParam newsId: Long, @RequestPart(name = "image") imageList: List<MultipartFile>) {
+    fun addImage(@RequestParam newsId: Long, @RequestPart(name = "image") imageList: MutableList<MultipartFile>) {
         return newsService.addNewsImage(newsId, imageList)
     }
 

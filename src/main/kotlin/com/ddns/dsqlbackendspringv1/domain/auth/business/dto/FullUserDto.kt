@@ -7,6 +7,5 @@ data class FullUserDto(
     val role: Role,
     val name: String,
     val email: String,
-    val pw: String,
     val introduction: String
 )

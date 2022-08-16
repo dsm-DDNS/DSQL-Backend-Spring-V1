@@ -16,7 +16,7 @@ interface ProjectService {
     fun getFullProjectById(id:Long): FullProjectDto
 
     //register part
-    fun registerProject(request: RegisterProjectRequest, imageList: List<MultipartFile>?): GenerateProjectResponse
+    fun registerProject(request: RegisterProjectRequest): GenerateProjectResponse
     fun addImage(projectId: Long, imageList: List<MultipartFile>)
     fun addUrlInfo(projectId: Long, request: AddUrlInfoRequest)
     fun addDev(projectId: Long, request: AddDevRequest)

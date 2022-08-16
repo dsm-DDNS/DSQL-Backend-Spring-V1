@@ -20,6 +20,7 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import javax.transaction.Transactional
+import kotlin.streams.toList
 
 @Service
 class ProjectServiceImpl(
@@ -54,7 +55,8 @@ class ProjectServiceImpl(
         return findProject(id).toFullProjectDto()
     }
 
-    override fun registerProject(request: RegisterProjectRequest, imageList: List<MultipartFile>?): GenerateProjectResponse {
+    @Transactional
+    override fun registerProject(request: RegisterProjectRequest): GenerateProjectResponse {
         projectRepository.findByTitle(request.title).orElse(null)?. let {throw AlreadySameNameProjectExistsException(request.title)}
 
         val user = current.getCurrentUser()
@@ -70,14 +72,8 @@ class ProjectServiceImpl(
 
         project.addDevAll(request.devList)
         project.addUrlInfoAll(request.urlInfo)
-
-        val uploadedProject = uploadFileService.uploadImageList(imageList, project)
-        projectRepository.save(uploadedProject as Project)
-
         return GenerateProjectResponse(
-            projectRepository.save(
-                uploadedProject
-            ).id!!
+            project.id!!,
         )
 
     }
@@ -134,7 +130,7 @@ class ProjectServiceImpl(
         val user = current.getCurrentUser()
         val project = findProjectWithWriter(projectId, user)
         for (url in project.urlInfo) {
-            if (url.title.equals(urlKeyName)) {
+            if (url.title == urlKeyName) {
                 project.removeUrlInfo(url)
             }
         }

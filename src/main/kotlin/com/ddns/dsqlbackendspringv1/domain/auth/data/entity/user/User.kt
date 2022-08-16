@@ -54,7 +54,6 @@ sealed class User(
             this.role,
             this.name,
             this.email,
-            this.pw,
             this.introduction
         )
     }
