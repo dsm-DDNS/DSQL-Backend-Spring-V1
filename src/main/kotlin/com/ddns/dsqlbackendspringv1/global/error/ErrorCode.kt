@@ -8,8 +8,8 @@ enum class ErrorCode(
 ) {
 
     USERNAME_NOT_FOUND("Username Not Found", HttpStatus.NOT_FOUND),
-    INVALID_TOKEN("Invalid Token", HttpStatus.BAD_REQUEST),
-    EXPIRED_TOKEN("token Expired", HttpStatus.BAD_REQUEST),
+    INVALID_TOKEN("Invalid Token", HttpStatus.UNAUTHORIZED),
+    EXPIRED_TOKEN("token Expired", HttpStatus.FORBIDDEN),
     HEADER_NOT_FOUND("Header Not Found", HttpStatus.NOT_FOUND),
     S3_ERROR("S3 작업 과정 중 에러가 발생했습니다.", HttpStatus.BAD_GATEWAY),
     EMAIL_ERROR("Email 전송 과정 중 에러가 발생했습니다.", HttpStatus.BAD_GATEWAY),

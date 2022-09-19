@@ -21,6 +21,20 @@ class UploadFileServiceImpl(
 ): UploadFileService {
 
     @Transactional(propagation = Propagation.NESTED)
+    override fun uploadImageLogo(image: MultipartFile, target: UploadFile): UploadFile {
+        target.addLogoImg(
+            Image(
+                image.originalFilename?:"UNTITLED",
+                imageUtil.uploadFile(image, ProjectServiceImpl.IMAGE_ROOT_NAME, target.getIdentity())
+            )
+
+        )
+
+        return target
+    }
+
+
+    @Transactional(propagation = Propagation.NESTED)
     override fun uploadImageList(imageList: List<MultipartFile>, target: UploadFile): UploadFile {
         val parsedImageList: MutableList<Image> = ArrayList()
         imageList.map {
@@ -42,7 +56,7 @@ class UploadFileServiceImpl(
 
     @Transactional(propagation = Propagation.NESTED)
     override fun removeImage(user: User, imageUrl: String, target: UploadFile): UploadFile {
-        for (img in target.imgList) {
+        for (img in target.getImgList()) {
             if (img.url == imageUrl) {
                 target.removeImg(img)
             }

@@ -58,4 +58,8 @@ sealed class User(
         )
     }
 
+    override fun toString(): String {
+        return "${this.id}, ${this.email}, ${this.name}, ${this.role}, ${this.introduction}, ${this.createdDate}, ${this.updateDate}"
+    }
+
 }

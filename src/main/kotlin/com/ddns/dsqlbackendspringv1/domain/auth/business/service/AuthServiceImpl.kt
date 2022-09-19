@@ -40,20 +40,22 @@ class AuthServiceImpl(
 //        ).code == request.emailCheckCode
         ) {
             val encPw = passwordEncoder.encode(request.pw)
-            val user = if (request.userType.equals(Role.ADMIN))
-                Admin(
-                    UUID.randomUUID().toString(),
-                    request.name,
-                    request.email,
-                    encPw,
-                    request.introduction
-                )
-            else Teacher(
-                UUID.randomUUID().toString(),
-                request.name,
-                request.email,
-                encPw,
-                request.introduction
+            val user = (
+                    if (request.userType.equals(Role.ADMIN))
+                        Admin(
+                            UUID.randomUUID().toString(),
+                            request.name,
+                            request.email,
+                            encPw,
+                            request.introduction
+                        )
+                    else Teacher(
+                        UUID.randomUUID().toString(),
+                        request.name,
+                        request.email,
+                        encPw,
+                        request.introduction
+                    )
             )
 
             userRepository.save(

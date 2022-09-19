@@ -7,5 +7,6 @@ data class ShortProject (
     val title: String,
     val img: List<Image>,
     val introduction: String,
-    val urlList: List<UrlInfo>
+    val urlList: List<UrlInfo>,
+    val logo: Image
 )

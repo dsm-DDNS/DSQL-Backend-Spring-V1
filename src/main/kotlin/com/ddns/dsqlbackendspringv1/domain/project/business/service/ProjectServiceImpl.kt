@@ -3,6 +3,7 @@ package com.ddns.dsqlbackendspringv1.domain.project.business.service
 import com.ddns.dsqlbackendspringv1.domain.auth.data.entity.user.User
 import com.ddns.dsqlbackendspringv1.domain.project.business.dto.FullProjectDto
 import com.ddns.dsqlbackendspringv1.domain.project.data.entity.Developer
+import com.ddns.dsqlbackendspringv1.domain.project.data.entity.Image
 import com.ddns.dsqlbackendspringv1.domain.project.data.entity.Project
 import com.ddns.dsqlbackendspringv1.domain.project.data.entity.UrlInfo
 import com.ddns.dsqlbackendspringv1.domain.project.data.repository.ProjectRepository
@@ -17,6 +18,7 @@ import com.ddns.dsqlbackendspringv1.domain.project.presentation.dto.response.Sho
 import com.ddns.dsqlbackendspringv1.global.util.image.UploadFileService
 import com.ddns.dsqlbackendspringv1.global.util.user.UserCheckUtil
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import javax.transaction.Transactional
@@ -30,11 +32,11 @@ class ProjectServiceImpl(
 ): ProjectService {
 
     companion object {
-        const val IMAGE_ROOT_NAME = "project"
+        const val IMAGE_ROOT_NAME = "DSQL"
     }
 
     override fun getShortProjectList(idx: Int, size: Int): ShortProjectListResponse {
-        val shortProjectList = projectRepository.findAll(PageRequest.of(idx, size))
+        val shortProjectList = projectRepository.findAll(PageRequest.of(idx, size, Sort.by("createdDate").descending()))
             .stream().map { it.toShortProjectDto() }.toList()
         return ShortProjectListResponse(
             shortProjectList,
@@ -43,7 +45,7 @@ class ProjectServiceImpl(
     }
 
     override fun getFullProjectListOrderByCreateAtDesc(idx: Int, size: Int): FullProjectListResponse {
-        val fullProjectList = projectRepository.findAll(PageRequest.of(idx, size))
+        val fullProjectList = projectRepository.findAll(PageRequest.of(idx, size, Sort.by("createdDate").descending()))
             .stream().map { it.toFullProjectDto() }.toList()
         return FullProjectListResponse(
             fullProjectList,
@@ -66,16 +68,25 @@ class ProjectServiceImpl(
             request.startDate,
             request.endDate,
             request.devList as MutableList<Developer>,
-            user
+            user,
+
         )
         projectRepository.save(project)
 
-        project.addDevAll(request.devList)
         project.addUrlInfoAll(request.urlInfo)
         return GenerateProjectResponse(
             project.id!!,
         )
 
+    }
+
+    override fun updateLogo(projectId: Long, image: MultipartFile) {
+        val user = current.getCurrentUser()
+        val project = findProjectWithWriter(projectId, user)
+
+        val uploadedProject = uploadFileService.uploadImageLogo(image, project)
+
+        projectRepository.save(uploadedProject as Project)
     }
 
 

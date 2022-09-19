@@ -7,6 +7,7 @@ import com.ddns.dsqlbackendspringv1.domain.project.presentation.dto.response.Ful
 import com.ddns.dsqlbackendspringv1.domain.project.presentation.dto.response.GenerateProjectResponse
 import com.ddns.dsqlbackendspringv1.domain.project.presentation.dto.response.ShortProjectListResponse
 import org.springframework.http.HttpStatus
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -33,20 +34,32 @@ class ProjectController(
     }
 
     @GetMapping("/short/list")
-    fun getShortProjectList(@RequestParam(required = false, defaultValue = 1.toString()) idx: Int, size: Int): ShortProjectListResponse {
+    fun getShortProjectList(
+        @RequestParam(required = false, defaultValue = "0") idx: Int,
+        @RequestParam(defaultValue = "10", required = false) size: Int
+    ): ShortProjectListResponse {
         return projectService.getShortProjectList(idx, size)
     }
 
     @GetMapping("/full/list")
-    fun getFullProjectList(@RequestParam(required = false, defaultValue = 1.toString()) idx: Int, size: Int): FullProjectListResponse {
+    fun getFullProjectList(
+        @RequestParam(required = false, defaultValue = "0") idx: Int,
+        @RequestParam(defaultValue = "10") size: Int
+    ): FullProjectListResponse {
         return projectService.getFullProjectListOrderByCreateAtDesc(idx, size)
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun registerProject(@RequestBody request: RegisterProjectRequest): GenerateProjectResponse {
+    fun registerProject(@RequestBody @Validated request: RegisterProjectRequest): GenerateProjectResponse {
         return projectService.registerProject(request)
     }
+
+    @PutMapping("/logo")
+    fun updateLogo(@RequestParam projectId: Long, @RequestPart(name = "logo", required = true, ) image: MultipartFile) {
+        return projectService.updateLogo(projectId, image)
+    }
+
 
     @PutMapping("/img")
     fun addImage(@RequestParam projectId: Long, @RequestPart(name = "image") imageList: List<MultipartFile>) {

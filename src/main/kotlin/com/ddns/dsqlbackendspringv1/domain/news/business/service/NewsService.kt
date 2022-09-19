@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile
 
 interface NewsService {
 
-    fun getShortNewsList(idx: Int, size: Int): Page<ShortNewsDto>
+    fun getShortNewsList(idx: Int, size: Int): Page<FullNewsDto>
     fun getOneFullNewsList(id: Long): FullNewsDto
     fun getLatestFullNewsList(): FullNewsDto
     fun generateNews(request: GenerateNewsRequest)

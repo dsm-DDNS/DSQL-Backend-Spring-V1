@@ -7,6 +7,7 @@ import com.ddns.dsqlbackendspringv1.domain.news.presentation.dto.request.EditNew
 import com.ddns.dsqlbackendspringv1.domain.project.data.entity.Image
 import com.ddns.dsqlbackendspringv1.global.base.entity.BaseTimeEntity
 import com.ddns.dsqlbackendspringv1.global.base.entity.UploadFile
+import java.sql.Blob
 import java.time.LocalDate
 import javax.persistence.Column
 import javax.persistence.ElementCollection
@@ -21,8 +22,8 @@ import javax.persistence.ManyToOne
 @Entity
 class News(
     title: String,
-    content: String,
     shortContent: String,
+    content: String,
     writer: User,
 ): UploadFile(
     title,
@@ -32,6 +33,7 @@ class News(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
 
+    @Column(name="short_content")
     var shortContent: String = shortContent
 
     @ManyToOne
@@ -43,7 +45,7 @@ class News(
             this.title,
             this.shortContent,
             this.writer.toMiniUserDto(),
-            this.imgList
+            this.getImgList()
         )
     }
 
@@ -51,10 +53,10 @@ class News(
         return FullNewsDto(
             this.title,
             this.shortContent,
-            this.content,
+            this.content.toString(),
             this.writer.toFullUserDto(),
             this.createdDate!!.toLocalDate(),
-            this.imgList.toList()
+            this.getImgList()
         )
     }
 
@@ -63,6 +65,10 @@ class News(
         this.shortContent = request.shortContent
         this.content = request.content
 
+    }
+
+    override fun addLogoImg(img: Image) {
+        this.addImg(img)
     }
 
     override fun getIdentity(): String {

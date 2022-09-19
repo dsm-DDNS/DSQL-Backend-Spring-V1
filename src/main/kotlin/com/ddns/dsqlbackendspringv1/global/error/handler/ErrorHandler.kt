@@ -27,8 +27,8 @@ class ErrorHandler {
     fun methodArgumentNotValidException(e: MethodArgumentNotValidException): ResponseEntity<*> {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
             ErrorResponse(
-                e.message,
-                "Invalid request"
+                e.bindingResult.allErrors[0].defaultMessage.toString(),
+                e.bindingResult.allErrors[0].arguments?.get(0).toString()
             )
         )
     }

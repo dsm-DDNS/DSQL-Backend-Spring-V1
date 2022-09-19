@@ -8,6 +8,7 @@ import com.ddns.dsqlbackendspringv1.domain.news.presentation.dto.request.Generat
 import com.ddns.dsqlbackendspringv1.domain.news.presentation.dto.response.ShortNewsListResponse
 import org.springframework.data.domain.Page
 import org.springframework.http.HttpStatus
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -30,7 +31,7 @@ class NewsController(
 
 
     @GetMapping("/list")
-    fun getShortNewsList(@RequestParam(defaultValue = "0", required = false) idx: Int,@RequestParam(defaultValue = "5", required = false) size: Int): Page<ShortNewsDto> {
+    fun getNewsList(@RequestParam(defaultValue = "0", required = false) idx: Int,@RequestParam(defaultValue = "5", required = false) size: Int): Page<FullNewsDto> {
         return newsService.getShortNewsList(idx, size)
     }
 
@@ -46,7 +47,7 @@ class NewsController(
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun generateNews(@RequestBody request: GenerateNewsRequest) {
+    fun generateNews(@RequestBody @Validated request: GenerateNewsRequest) {
         return newsService.generateNews(request)
     }
 
@@ -58,7 +59,7 @@ class NewsController(
 
     @PutMapping("/img")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    fun addImage(@RequestParam newsId: Long, @RequestPart(name = "image") imageList: MutableList<MultipartFile>) {
+    fun addImage(@RequestParam(required = true) newsId: Long, @RequestPart(name = "image", required = true) imageList: MutableList<MultipartFile>) {
         return newsService.addNewsImage(newsId, imageList)
     }
 

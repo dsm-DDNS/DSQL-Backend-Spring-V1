@@ -27,9 +27,9 @@ class NewsServiceImpl(
     private val uploadFileService: UploadFileService
 
 ): NewsService {
-    override fun getShortNewsList(idx: Int, size: Int): Page<ShortNewsDto> {
+    override fun getShortNewsList(idx: Int, size: Int): Page<FullNewsDto> {
         return newsRepository.findAllByOrderByCreatedDateDesc(PageRequest.of(idx, size)).map {
-            it.toShortNews()
+            it.toFullNewsDto()
         }
     }
 
